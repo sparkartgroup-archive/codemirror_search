@@ -5,7 +5,7 @@
 //          'highlight' : true/false (highlights all matches if document under 2000 lines)
 // text:    for replace methods only. Specifies what to replace matches with
 
-(function($) {
+(function() {
     var SearchState = function() {
         this.posFrom    = null;
         this.posTo      = null;
@@ -25,8 +25,15 @@
         return cm.getSearchCursor(query, pos, ignoreCase);
     }
 
+    var _extend = function(options1, options2) {
+        for (key in options2) {
+            options1[key] = options2[key]
+        }
+        return options1
+    }
+
     var _defaultSettings = function(options) {
-        return $.extend({
+        return _extend({
             'ignoreCase' : false,
             'regexp'     : false,
             'highlight'  : true
@@ -34,11 +41,11 @@
     }
 
     var _parseQuery = function(query, options) {
-        var settings = $.extend({
+        var settings = _extend({
             'regexp'    : false,
             'ignoreCase': false
         }, options)
-        
+
         if (settings['regexp']) {
             return new RegExp(query, settings['ignoreCase'] ? 'i' : '');
         } else {
@@ -187,4 +194,4 @@
     CodeMirror.defineExtension("replace",     function(query, text, options) { replace(this, query, text, options) });
     CodeMirror.defineExtension("findReplace", function(query, text, options) { findReplace(this, query, text, options) });
     CodeMirror.defineExtension("replaceAll",  function(query, text, options) { replaceAll(this, query, text, options) });
-})(jQuery);
+})();
