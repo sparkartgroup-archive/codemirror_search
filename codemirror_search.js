@@ -27,7 +27,7 @@
 
     var _defaultSettings = function(options) {
         return $.extend({
-            'ignoreCase' : typeof query == "string" && query == query.toLowerCase(), //if the query string is all lowercase, do a case insensitive search
+            'ignoreCase' : false,
             'regexp'     : false,
             'highlight'  : true
         }, options)
@@ -48,18 +48,19 @@
 
     var _find = function(cm, query, options, reverse) {
         var state = _getSearchState(cm);
-        if (state.query === query && state.options['ignoreCase'] === options['ignoreCase']) return _next(cm, reverse);
+        query = _parseQuery(query, options);
+        if (state.query && state.query.toString() === query.toString() && state.options['ignoreCase'] === options['ignoreCase'] && state.options['regexp'] === options['regexp']) return _next(cm, reverse);
 
         clearSearch(cm);
         var settings = _defaultSettings(options);
 
         cm.operation(function() {
             if (!query || state.query) return;
-            state.query = _parseQuery(query);
-            state.options = settings
+            state.query = query;
+            state.options = settings;
 
-            if (cm.lineCount() < 2000) { // This is too expensive on big documents.
-                for (var cursor = _getSearchCursor(cm, query, null, state.options['ignoreCase']); cursor.findNext();) {
+            if (settings['highlight'] && cm.lineCount() < 2000) { // This is too expensive on big documents.
+                for (var cursor = _getSearchCursor(cm, state.query, null, state.options['ignoreCase']); cursor.findNext();) {
                     state.marked.push(cm.markText(cursor.from(), cursor.to(), "CodeMirror-searching"));
                 };
             }
@@ -108,8 +109,18 @@
         });
     }
 
-    var _doReplace = function(cm, query, text) {
+    var _doReplace = function(cm, cursor, text) {
+        var state = _getSearchState(cm);
+        var query = state.query;
 
+        if (state.options['regexp']) {
+            var match = cm.getRange(cursor.from(), cursor.to()).match(query);
+            cursor.replace(text.replace(/\$(\d)/g, function(w, i) {
+                return match[i] ? match[i] : '';
+            }));
+        } else {
+            cursor.replace(text);
+        }
     }
 
     // replaces found query with text
@@ -118,7 +129,16 @@
         var query, cursor;
 
         if ((query = state.query) && (cursor = state.cursor)) {
-            cursor.replace(typeof query == "string" ? text : text.replace(/\$(\d)/g, function(w, i) {return match[i];}));
+            if (state.options['regexp']) {
+                var match = cm.getRange(cursor.from(), cursor.to()).match(query);
+                if (match) {
+                    cursor.replace(text.replace(/\$(\d)/g, function(w, i) {
+                        return match[i] ? match[i] : '';
+                    }));
+                }
+            } else {
+                cursor.replace(text);
+            }
             cm.setSelection(cursor.from(), cursor.to());
         }
     }
@@ -134,14 +154,16 @@
         var settings = _defaultSettings(options);
 
         if (!query) return;
-        query = _parseQuery(query);
+        query = _parseQuery(query, options);
 
         var count = 0;
         cm.compoundChange(function() {
             cm.operation(function() {
-                for (var cursor = _getSearchCursor(cm, query, null, settings['ignoreCase']); cursor.findNext();) {
+                var cursor = _getSearchCursor(cm, query, null, settings['ignoreCase']);
+                var match = cursor.findNext();
+                while (match) {
+
                     if (settings['regexp']) {
-                        var match = cm.getRange(cursor.from(), cursor.to()).match(query);
                         cursor.replace(text.replace(/\$(\d)/g, function(w, i) {
                             return match[i] ? match[i] : '';
                         }));
@@ -149,6 +171,7 @@
                         cursor.replace(text);
                     }
 
+                    match = cursor.findNext();
                     count++;
                 };
             });

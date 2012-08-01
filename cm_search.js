@@ -16,7 +16,10 @@
 
             var query = $('input.find').val();
             var text  = $('input.replace').val();
-            var options = {'ignoreCase': $('input.ignoreCase').prop("checked")};
+            var options = {
+                'ignoreCase': $('input.ignoreCase').prop("checked"),
+                'regexp'    : $('input.regexp').prop("checked")
+            };
             editor.replaceAll(query, text, options);
         });
 
@@ -25,7 +28,10 @@
 
             var query = $('input.find').val();
             var text = $('input.replace').val();
-            var options = {'ignoreCase': $('input.ignoreCase').prop("checked")};
+            var options = {
+                'ignoreCase': $('input.ignoreCase').prop("checked"),
+                'regexp'    : $('input.regexp').prop("checked")
+            };
             editor.replace(query, text, options);
         });
 
@@ -34,7 +40,10 @@
 
             var query = $('input.find').val();
             var text = $('input.replace').val();
-            var options = {'ignoreCase': $('input.ignoreCase').prop("checked")};
+            var options = {
+                'ignoreCase': $('input.ignoreCase').prop("checked"),
+                'regexp'    : $('input.regexp').prop("checked")
+            };
             editor.findReplace(query, text, options);
         });
 
@@ -42,7 +51,10 @@
             e.preventDefault();
 
             var query = $('input.find').val();
-            var options = {'ignoreCase': $('input.ignoreCase').prop("checked")};
+            var options = {
+                'ignoreCase': $('input.ignoreCase').prop("checked"),
+                'regexp'    : $('input.regexp').prop("checked")
+            };
             editor.findPrev(query, options);
         });
 
@@ -50,7 +62,10 @@
             e.preventDefault();
 
             var query = $('input.find').val();
-            var options = {'ignoreCase': $('input.ignoreCase').prop("checked")};
+            var options = {
+                'ignoreCase': $('input.ignoreCase').prop("checked"),
+                'regexp'    : $('input.regexp').prop("checked")
+            };
             editor.findNext(query, options);
         });
     });
