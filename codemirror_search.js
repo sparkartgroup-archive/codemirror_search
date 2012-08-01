@@ -178,7 +178,6 @@
         });
 
         clearSearch(cm);
-
         return count;
     };
 
