@@ -132,6 +132,8 @@
 
     // replaces found query with text
     var replace = function(cm, query, text, options) {
+        if (cm.getOption('readOnly')) return;
+
         var state = _getSearchState(cm);
         var query, cursor;
 
@@ -151,6 +153,8 @@
     }
 
     var findReplace = function(cm, query, text, options) {
+        if (cm.getOption('readOnly')) return;
+
         replace(cm, query, text, options);
         _find(cm, query, options);
     }
@@ -158,6 +162,8 @@
     // Replaces all query with text and returns the total number of replacements
     // Wrap everything in 1 undo function
     var replaceAll = function(cm, query, text, options) {
+        if (cm.getOption('readOnly')) return;
+
         var settings = _defaultSettings(options);
 
         if (!query) return;
