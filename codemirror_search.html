@@ -2,9 +2,14 @@
 <head>
     <script src="jquery-1.7.2.min.js" type="text/javascript"></script>
 
-    <link href="lib/codemirror.css" media="screen" rel="stylesheet" type="text/css">
-    <script src="lib/codemirror.js" type="text/javascript"></script>
-    <script src="mode/ruby/ruby.js" type="text/javascript"></script>
+    <link  href="codemirror/2.32.b186039ea9/lib/codemirror.css" media="screen" rel="stylesheet" type="text/css">
+    <script src="codemirror/2.32.b186039ea9/lib/codemirror.js" type="text/javascript"></script>
+    <script src="codemirror/2.32.b186039ea9/mode/ruby/ruby.js" type="text/javascript"></script>
+    <script src="codemirror/2.32.b186039ea9/lib/util/searchcursor.js" type="text/javascript"></script>
+
+    <script src="codemirror_search.js" type="text/javascript"></script>
+    <script src="cm_search.js" type="text/javascript"></script>
+
     <style>
       .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
     </style>
@@ -14,10 +19,6 @@
     <style>
       .modal-backdrop {background: none;}
     </style>
-
-    <script src="lib/util/searchcursor.js" type="text/javascript"></script>
-    <script src="codemirror_search.js" type="text/javascript"></script>
-    <script src="cm_search.js" type="text/javascript"></script>
 </head>
 <body>
     <h1>CodeMirror: Ruby mode</h1>
